@@ -54,9 +54,18 @@ app.regrpc('wamp.rt.foo', function(id, args, session) {
 	self.sess = session; // save last session of called rpc
 	sock = session.wsclient._socket;
 	console.log("["+ sock.remoteAddress + ":" + sock.remotePort + "] args=" + args);
-    app.resrpc(id,["bar", "bar2"], {"key1": "bar1", "key2": "bar2"});
+
+	app.resrpc(id, false, [[{"key1": "bar1", "key2": "bar2"}]]); // args
+	//app.resrpc(id, false, [[{"key1": "bar1", "key2": "bar2"}],[{"key1": "bar1", "key2": "bar2"}]]); // args + kwargs
+	//app.resrpc(id, false, [[2222]]); // id, isError, only args
+	//app.resrpc(id, false, [[2222],[3333]]); // id, isError, args + kwargs
 	self.bla = "hue";
 });
 
+app.regrpc('wamp.rt.add', function(id, args, session) {
+	sock = session.wsclient._socket;
+	console.log("["+ sock.remoteAddress + ":" + sock.remotePort + "] add " + args[0][0] + " " + args[0][1]);
+	app.resrpc(id, false, [[args[0][0] + args[0][1]]]);
+});
 
 require("repl").start("repl> ");
