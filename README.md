@@ -17,3 +17,9 @@ wamp.rt has been inspired by the following Open Source projects:
 
 - [wamp.io](https://github.com/nicokaiser/wamp.io) 
 
+## REPL examples
+
+Ask for client IP:
+
+    repl> app._sessions['6783053777709402'].wsclient._socket.remoteAddress
+    repl> app._sessions['6783053777709402'].wsclient._socket.remotePort
