@@ -10,12 +10,11 @@
 
 WAMPRT_TRACE = true;
 
-var Router = require('../lib/wamp.rt');
-var program = require('commander');
+Router = require('../lib/wamp.rt');
+program = require('commander');
 
 
-program
-    .option('-p, --port <port>', 'Server IP port', parseInt,9000);
+program.option('-p, --port <port>', 'Server IP port', parseInt,9000);
 
 
 function onRPCRegistered(uri) {
@@ -33,7 +32,7 @@ function onPublish(topicUri, args) {
 //
 // WebSocket server
 //
-var app = new Router(
+app = new Router(
     { port: program.port,
       // The router will select the appropriate protocol,
       // but we can still deny the connection
@@ -54,3 +53,6 @@ app.regrpc('wamp.rt.foo', function(id,args) {
     console.log('called with ' + args);
     app.resrpc(id,["bar", "bar2"], {"key1": "bar1", "key2": "bar2"});
 });
+
+
+require("repl").start("repl> ");
