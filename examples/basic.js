@@ -49,9 +49,13 @@ app.on('RPCRegistered', onRPCRegistered);
 app.on('RPCUnregistered', onRPCUnregistered);
 app.on('Publish', onPublish);
 
-app.regrpc('wamp.rt.foo', function(id,args) {
-    console.log('called with ' + args);
+self = this; // to access newly made "globals" in REPL
+app.regrpc('wamp.rt.foo', function(id, args, session) {
+	self.sess = session; // save last session of called rpc
+	sock = session.wsclient._socket;
+	console.log("["+ sock.remoteAddress + ":" + sock.remotePort + "] args=" + args);
     app.resrpc(id,["bar", "bar2"], {"key1": "bar1", "key2": "bar2"});
+	self.bla = "hue";
 });
 
 
