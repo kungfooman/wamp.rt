@@ -50,7 +50,7 @@ app.on('RPCUnregistered', onRPCUnregistered);
 app.on('Publish', onPublish);
 
 self = this; // to access newly made "globals" in REPL
-app.regrpc('wamp.rt.foo', function(id, args, session) {
+app.regrpc("wamp.rt.foo", function(id, args, session) {
 	self.sess = session; // save last session of called rpc
 	sock = session.wsclient._socket;
 	console.log("["+ sock.remoteAddress + ":" + sock.remotePort + "] args=" + args);
@@ -62,10 +62,31 @@ app.regrpc('wamp.rt.foo', function(id, args, session) {
 	self.bla = "hue";
 });
 
-app.regrpc('wamp.rt.add', function(id, args, session) {
+//app.regrpc("wamp.rt.add", function(id, args, session) {
+//	sock = session.wsclient._socket;
+//	console.log("["+ sock.remoteAddress + ":" + sock.remotePort + "] add " + args[0][0] + " " + args[0][1]);
+//	app.resrpc(id, false, [[args[0][0] + args[0][1]]]);
+//});
+
+app.session.register("player_join", function(args, uri, session) {
 	sock = session.wsclient._socket;
-	console.log("["+ sock.remoteAddress + ":" + sock.remotePort + "] add " + args[0][0] + " " + args[0][1]);
-	app.resrpc(id, false, [[args[0][0] + args[0][1]]]);
+	console.log("["+ sock.remoteAddress + ":" + sock.remotePort + "] " + uri + " " + args[0]);
+	console.log("Player connected: " + args[0]);
+	return 777;
 });
+
+app.session.subscribe("server_got_message", function(args, uri, session) {
+	app.session.publish("player_message", ["somebody wrote: " + args[0]]);
+});
+
+app.session.register("wamp.rt.add", function(args, uri, session) {
+	sock = session.wsclient._socket;
+	console.log("["+ sock.remoteAddress + ":" + sock.remotePort + "] " + uri + " " + args[0] + " " + args[1]);
+	return args[0] + args[1];
+});
+
+subs = function() {
+	app.session.publish("wamp.rt.subs", [123]);
+}
 
 require("repl").start("repl> ");
