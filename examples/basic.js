@@ -75,6 +75,25 @@ app.session.register("player_join", function(args, uri, session) {
 	return 777;
 });
 
+/*
+	Call this like:
+		function timing(ret) {
+			connection.session.call('server_timingtest', [ret]).then(
+				function (res) {
+					console.log("Result:", res);
+				}
+			);
+		}
+		for (i=0; i<10; i++)
+			timing(i);
+*/
+
+app.session.registerCallback("server_timingtest", function(args, uri, session, returnCallback) {
+	setTimeout(function() {
+		returnCallback(args[0]);
+	}, 1000);
+});
+
 app.session.subscribe("server_got_message", function(args, uri, session) {
 	app.session.publish("player_message", ["somebody wrote: " + args[0]]);
 });
